@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kubectlsshfs
+spec: 
+  volumes:
+    - name: kubeconfig
+      hostPath:
+        path: /etc/kubernetes/kubelet.conf
+    - name: kubecerts
+      hostPath:
+        path: /var/lib/kubelet/pki
+  restartPolicy: Never
+  containers:
+    - name: kubectlsshfs
+      image: eubraatmosphere/eubraatmosphere_autobuild:ub16_sshfs_kubectl-client
+      volumeMounts:
+      - name: kubeconfig
+        mountPath: /etc/kubernetes/kubelet.conf
+        readOnly: true
+      - name: kubecerts
+        mountPath: /var/lib/kubelet/pki
+        readOnly: true
+      #command: ['sh', '-c', 'echo use kubectl --server $KUBERSERVER $KUBEOPS <command> && sleep 3600']
+      #command: [ 'bash' ]  <- This will overwrite the ENTRYPOINT of the container
+      args: [ 'sleep 3600' ]
+      securityContext:
+        privileged: true
+      env:
+        - name: KUBESERVER
+          value: "https://10.0.0.4:6443"
+        - name: KUBEOPS 
+          value: "--insecure-skip-tls-verify=true --kubeconfig=/etc/kubernetes/kubelet.conf"
+        - name: SSHPRIVKEY
+          value: "-----BEGIN RSA PRIVATE KEY-----\\nMIIEowIBAAKCAQEAwxOE4/R5T7LzWJrk79VKocOL1MznP9wiHzaqosOY5ct4gGrq\\n/cMOLpXdrMjODhuc/NEOClt2prExX/sGPj
+aQQh3E5MYi95Dmjq6kn/3VvvfTPYBm\\n3sv6bYdBg4sEt46GpJ41HH1Hgj/rFORkTZVn6KyV1gIHZuCYRe1yhTpEnmWCaNUB\\nQnelcDY5grxyA4JAmDEU6MRMgi5Go83TcjcoXn9KVyYKY4gXh/lXAGTdU
+hihTv6S\\n/hHKJaaYD8IwlTtcEu0ykx+w4Dlh5tX+WwaoopfK6wRS1HuutODLJ0qWMSiXjDY4\\nhU+tAQiUMdSPVEj7+zYp6ZJxQUXKWs54+m71RQIDAQABAoIBAEuRyC02i7ggLrzo\\nZD+0dNDtm8G4D
+u1iLaXB26Bp/VUn2WqGALqFUX0ieVlyAMDeWZZmtfW1MOWqRuJT\\nsDtxj7jNJ3UofGtDKs2jQgronmD4SFDO6QruIflEKFD5Db6969Lhptl+frEqabsS\\nLvkPI82y7eiVqKBl6RdNwMtzoxlotE+K1Bcw
+hbd6ddYbSvd47bPDhhwjCRWWhiV5\\ncPBIIAF3huSy/EI+EeCTJvOKvL2wvOlqoVZHtO/mtHvGPJb8F02sJbUYM3E6fH36\\n6N4TfJbm1sMP8NqoEEtS1xck9Xb2+RHqYVCPogPjg36TgIZWUZKgplMNWeV
+9HD5n\\nfYwNnAECgYEA4rBqktQgqKDKhxDtHyCslQWWtZOuZ5GHKzsbGw3stsUCIq2DAEEP\\nKa+jd7mO4ijROH5GaGkClZHVkz/J+q1kF3OPxlK/j5JCFy/Cwc0R0J9IuySOm9Sm\\nTr9jGdwiborybWJ
+eSBcd0wA7hg4bEE4AH5i6qt7oFfj0LULC2h1ECwUCgYEA3Eyx\\nOKU6bALYQ1GSU/J8POOfJzst9h21te25T4vZBYdX4faTQmNi/HWrBaXD3kccd8Hr\\n4xnovBA1z0Oevv0XDat4fkSsCIZqBlgiiOWZQj
+qIKGZwB1GKfDLtrP+HszSqusrS\\ndiX8vvvyDDkH9HVqnxFEguqvEOsTmlDWn0WZ1UECgYEArc4laD5Ma/4cSkKoC925\\ndOi8DKwWZEIoKPVAaxXaEKgsYvo2HtPDFGseIoWbD7vL7kyjHxqkaJlP735RF
+moq\\n+/AWpDB9v06cbbqo0H6y0gnOce4tiT0Z5fbHvOQTYj4WcdeiAhP3QfhDqxzVk0K6\\nxX8MYEZYG8CtNqahTypxKSECgYArBDqywei3gJK0CnCVPcsupI/GPFMMNN7viFzg\\nAIG/B5+MevZkRz3j6
+CId9zFY7O/NHqut67g7SLsJHr4XsxnWTH45wbUJ8R0w4fLU\\nYmjbuswtf1suwqhU+ijY2AiqYIVZ9hLEiURiEpY/9r7r6CWKq/eBzMukdRKd1l0i\\nOpgAQQKBgB3Vl7ZXQplCKutpDeG8MBN+yKSTNr56
+aeFsPonDZs9mj4ECthpP0W/+\\nm/baGKZjS1YooDk5rfQNWeRjDMf6SkkWDQR4d6HzyIO+NUrD2XAx9PmCiWSCBP5w\\nTGbNoRl9CiM0OlxanzwCAtVk7cpI3A1XFtYjSU4l7VftJ0v6WYx+\\n-----END
+ RSA PRIVATE KEY-----" 
+        - name: SSHPUBKEY
+          value:  "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDDE4Tj9HlPsvNYmuTv1Uqhw4vUzOc/3CIfNqqiw5jly3iAaur9ww4uld2syM4OG5z80Q4KW3amsTFf+wY+NpBCHcTkxiL3kO
+aOrqSf/dW+99M9gGbey/pth0GDiwS3joaknjUcfUeCP+sU5GRNlWforJXWAgdm4JhF7XKFOkSeZYJo1QFCd6VwNjmCvHIDgkCYMRToxEyCLkajzdNyNyhef0pXJgpjiBeH+VcAZN1SGKFO/pL+EcolppgPwjC
+VO1wS7TKTH7DgOWHm1f5bBqiil8rrBFLUe6604MsnSpYxKJeMNjiFT60BCJQx1I9USPv7NinpknFBRcpaznj6bvVF ubuntu@kubeserver.localdomain"
+        - name: SERVER
+          value: 10.244.1.100
+        - name: MOUNTPOINT
+          value: /mnt

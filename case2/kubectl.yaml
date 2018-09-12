@@ -1,0 +1,35 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: kubectl
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: kubectl
+    spec: 
+      volumes:
+      - name: kubeconfig
+        hostPath:
+          path: /etc/kubernetes/kubelet.conf
+      - name: kubecerts
+        hostPath:
+          path: /var/lib/kubelet/pki
+      containers:
+        - name: kubectl
+          image: eubraatmosphere/eubraatmosphere_autobuild:kubectl
+          volumeMounts:
+          - name: kubeconfig
+            mountPath: /etc/kubernetes/kubelet.conf
+            readOnly: true
+          - name: kubecerts
+            mountPath: /var/lib/kubelet/pki
+            readOnly: true
+          command: ['sh', '-c', 'echo use kubectl --server $KUBERSERVER $KUBEOPS <command> && sleep 3600']
+          env:
+          - name: KUBESERVER
+            value: "https://10.0.0.4:6443"
+          - name: KUBEOPS 
+            value: "--insecure-skip-tls-verify=true --kubeconfig=/etc/kubernetes/kubelet.conf"
+
