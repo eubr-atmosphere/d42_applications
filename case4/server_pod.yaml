@@ -1,0 +1,21 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: sshserver
+spec:
+  volumes:
+    - name: sshserver
+      persistentVolumeClaim:
+       claimName: task-pv-claim
+  containers:
+    - name: sshd
+      image: eubraatmosphere/eubraatmosphere_autobuild:ub16_sshd
+      env:
+        - name: SSHKEY
+          value: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDDE4Tj9HlPsvNYmuTv1Uqhw4vUzOc/3CIfNqqiw5jly3iAaur9ww4uld2syM4OG5z80Q4KW3amsTFf+wY+NpBCHcTkxiL3kOaOrqSf/dW+99M9gGbey/pth0GDiwS3joaknjUcfUeCP+sU5GRNlWforJXWAgdm4JhF7XKFOkSeZYJo1QFCd6VwNjmCvHIDgkCYMRToxEyCLkajzdNyNyhef0pXJgpjiBeH+VcAZN1SGKFO/pL+EcolppgPwjCVO1wS7TKTH7DgOWHm1f5bBqiil8rrBFLUe6604MsnSpYxKJeMNjiFT60BCJQx1I9USPv7NinpknFBRcpaznj6bvVF ubuntu@kubeserver.localdomain"
+      ports:
+        - containerPort: 22
+      volumeMounts:
+        - mountPath: "/share/vol001"
+          name: sshserver
+
