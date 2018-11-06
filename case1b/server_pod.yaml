@@ -1,0 +1,24 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: sshserver
+spec:
+  volumes:
+    - name: sshserver
+      persistentVolumeClaim:
+       claimName: task-pv-claim
+  containers:
+    - name: sshd
+      image: eubraatmosphere/eubraatmosphere_autobuild:ub16_sshd
+      env:
+       - name: SSHPRIVKEY
+          valueFrom:
+            secretKeyRef:
+              name: sshfs-secret
+              key: sshprivkey
+      ports:
+        - containerPort: 22
+      volumeMounts:
+        - mountPath: "/share/vol001"
+          name: sshserver
+
