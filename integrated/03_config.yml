@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sshfs-configmap
+data:
+  server: 10.243.1.57
+  mountpoint: /mnt
+

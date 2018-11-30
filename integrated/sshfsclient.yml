@@ -1,0 +1,41 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: sshfsclient
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: sshfsclient
+    spec: 
+      containers:
+        - name: sshfsclient
+          image: eubraatmosphere/eubraatmosphere_autobuild:ub16_sshfs
+          args: ['sleep 3600']
+#          command: ['sh', '-c', 'sleep 3600']
+          securityContext:
+            privileged: true
+          env:
+            - name: SSHPRIVKEY
+              valueFrom:
+                secretKeyRef:
+                  name: sshfs-secret
+                  key: sshprivkey
+            - name: SSHPUBKEY
+              valueFrom:
+                secretKeyRef:
+                  name: sshfs-secret
+                  key: sshpubkey
+            - name: SERVER
+              valueFrom:
+                configMapKeyRef:
+                  name: sshfs-configmap
+                  key: server
+            - name: MOUNTPOINT
+              valueFrom:
+                configMapKeyRef:
+                  name: sshfs-configmap
+                  key: mountpoint
+
+

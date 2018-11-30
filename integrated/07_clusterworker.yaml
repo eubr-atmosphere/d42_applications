@@ -1,0 +1,49 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: clusterworker
+spec: 
+  replicas: 4
+  template:
+    metadata:
+      labels: 
+        app: clusterworker
+    spec:
+      containers:
+       - name: opencvfilter
+         image: eubraatmosphere/eubraatmosphere_autobuild:ub16_ssfstf11-client
+         resources:
+           limits:
+             cpu: "1"
+           requests:
+             cpu: "0.5"
+         #image: eubraatmosphere/eubraatmosphere_autobuild:ub16_sshfspy3-client
+         #command: [ 'bash' ]  <- This will overwrite the ENTRYPOINT of the container
+         #args: [ 'for file in /mnt/share/vol001/data/*.MP4 ;  do frameext.py -i $file -o $file ; done' ]
+         args: [ 'ipengine --file=/mnt/.ipython/profile_default/security/ipcontroller-engine.json' ]
+#         args: [ 'sleep 3600' ]
+         securityContext:
+           privileged: true
+         env:
+           - name: SSHPRIVKEY
+             valueFrom:
+               secretKeyRef:
+                 name: sshfs-secret
+                 key: sshprivkey
+           - name: SSHPUBKEY
+             valueFrom:
+               secretKeyRef:
+                name: sshfs-secret
+                key: sshpubkey
+           - name: SERVER
+             valueFrom:
+               configMapKeyRef:
+                 name: sshfs-configmap
+                 key: server
+           - name: MOUNTPOINT
+             valueFrom:
+               configMapKeyRef:
+                 name: sshfs-configmap
+                 key: mountpoint
+#           - name: SKIPMOUNT
+#             value: "true"
