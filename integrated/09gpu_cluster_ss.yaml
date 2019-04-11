@@ -1,0 +1,69 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: tfcluster
+spec:
+  selector:
+    app: clusterworker
+  ports:
+  - protocol: TCP
+    port: 9376
+    name: nginx
+    targetPort: 80
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: clusterworker
+spec:
+  serviceName: "tfcluster"
+  replicas: 2
+  selector:
+    matchLabels:
+      app: clusterworker
+  template:
+    metadata:
+      labels: 
+        app: clusterworker
+    spec:
+      containers:
+       - name: opencvfilter
+         image: eubraatmosphere/eubraatmosphere_autobuild:ub16gpu_ssfstf10-client
+         resources:
+           limits:
+             nvidia.com/gpu: 1 #Number of GPUs
+             cpu: "1"
+           requests:
+             cpu: "0.5"
+         #image: eubraatmosphere/eubraatmosphere_autobuild:ub16_sshfspy3-client
+         #command: [ 'bash' ]  <- This will overwrite the ENTRYPOINT of the container
+         #args: [ 'for file in /mnt/share/vol001/data/*.MP4 ;  do frameext.py -i $file -o $file ; done' ]
+         #args: [ 'ipengine --file=/mnt/.ipython/profile_default/security/ipcontroller-engine.json' ]
+         args: [ 'python3 /usr/local/bin/mnist_worker.py --job_name=worker --task_index=$(hostname| sed -e "s/clusterworker-//") --worker_hosts=clusterworker-0.tfcluster.default.svc.cluster.local:8000,clusterworker-1.tfcluster.default.svc.cluster.local:8000 --ps_hosts=psserver-0.psserver.default.svc.cluster.local:8000 & ipengine --file=/mnt/.ipython/profile_default/security/ipcontroller-engine.json' ]
+#         args: [ 'sleep 3600' ]
+         securityContext:
+           privileged: true
+         env:
+           - name: SSHPRIVKEY
+             valueFrom:
+               secretKeyRef:
+                 name: sshfs-secret
+                 key: sshprivkey
+           - name: SSHPUBKEY
+             valueFrom:
+               secretKeyRef:
+                name: sshfs-secret
+                key: sshpubkey
+           - name: SERVER
+             valueFrom:
+               configMapKeyRef:
+                 name: sshfs-configmap
+                 key: server
+           - name: MOUNTPOINT
+             valueFrom:
+               configMapKeyRef:
+                 name: sshfs-configmap
+                 key: mountpoint
+#           - name: SKIPMOUNT
+#             value: "true"
+
