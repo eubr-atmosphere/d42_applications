@@ -1,0 +1,75 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: psserver
+spec:
+  selector:
+    app: psserver
+  ports:
+  - protocol: TCP
+    port: 9367
+    name: nginx
+    targetPort: 80
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: psserver
+spec:
+  serviceName: "psserver"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: psserver
+  template:
+    metadata:
+      labels: 
+        app: psserver
+    spec:
+      containers:
+       - name: psserver
+         image: eubraatmosphere/eubraatmosphere_autobuild:ub16_ssfstf11-client
+         resources:
+           limits:
+             cpu: "1"
+           requests:
+             cpu: "0.5"
+             # Two nodes args: [ 'python3 /usr/local/bin/mnist_psserver.py --job_name=ps --task_index=0 --worker_hosts=clusterworker-0.tfcluster.default.svc.cluster.local:8000,clusterworker-1.tfcluster.default.svc.cluster.local:8000 --ps_hosts=psserver-0.psserver.default.svc.cluster.local:8000' ]
+         args: [ 'python3 /usr/local/bin/mnist_psserver.py --job_name=ps --task_index=0 --worker_hosts=$WNLIST --ps_hosts=$PSLIST' ]
+              # One node  args: [ 'python3 /usr/local/bin/mnist_psserver.py --job_name=ps --task_index=0 --worker_hosts=clusterworker-0.tfcluster.default.svc.cluster.local:8000 --ps_hosts=psserver-0.psserver.default.svc.cluster.local:8000' ]
+         securityContext:
+           privileged: true
+         env:
+           - name: SSHPRIVKEY
+             valueFrom:
+               secretKeyRef:
+                 name: sshfs-secret
+                 key: sshprivkey
+           - name: SSHPUBKEY
+             valueFrom:
+               secretKeyRef:
+                name: sshfs-secret
+                key: sshpubkey
+           - name: PSLIST
+             valueFrom:
+               configMapKeyRef:
+                 name: distrib-tf
+                 key: ps-list
+           - name: WNLIST
+             valueFrom:
+               configMapKeyRef:
+                 name: distrib-tf
+                 key: wn-list
+           - name: SERVER
+             valueFrom:
+               configMapKeyRef:
+                 name: sshfs-configmap
+                 key: server
+           - name: MOUNTPOINT
+             valueFrom:
+               configMapKeyRef:
+                 name: sshfs-configmap
+                 key: mountpoint
+           - name: SKIPMOUNT
+             value: "true"
+

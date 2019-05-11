@@ -1,0 +1,10 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: distrib-tf
+data:
+  #wn-list: 'clusterworker-0.tfcluster.default.svc.cluster.local:8000,clusterworker-1.tfcluster.default.svc.cluster.local:8000,clusterworker-2.tfcluster.default.svc.cluster.local:8000'
+  wn-list: 'clusterworker-0.tfcluster.default.svc.cluster.local:8000,clusterworker-1.tfcluster.default.svc.cluster.local:8000'
+  #wn-list: 'clusterworker-0.tfcluster.default.svc.cluster.local:8000'
+  ps-list: 'psserver-0.psserver.default.svc.cluster.local:8000'
+

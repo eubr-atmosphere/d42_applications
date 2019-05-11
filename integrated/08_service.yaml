@@ -1,0 +1,15 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: psserver
+spec:
+  type: ExternalName
+  externalName: psserver.local
+  selector:
+    app: psserver
+  ports:
+  - protocol: TCP
+    port: 8000
+    targetPort: 8000
+

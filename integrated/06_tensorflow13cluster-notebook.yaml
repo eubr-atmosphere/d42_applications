@@ -1,0 +1,67 @@
+#### Deploy Notebook
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: tf-notebook
+  labels:
+    app: tf-notebook
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tf-notebook
+  template:
+    metadata:
+      labels:
+        app: tf-notebook
+    spec: 
+      containers:
+      - name: minimal-notebook
+        image: eubraatmosphere/eubraatmosphere_autobuild:ub16_tensorflow13-notebook
+        ports:
+        - containerPort: 8888
+        #command: ["bash"]
+        #args: ["-c", "sleep 3600"]
+        command: ["start-notebook.sh"]
+        args: ["--NotebookApp.token=''"]
+        securityContext:
+          privileged: true
+        env:
+          - name: SSHPRIVKEY
+            valueFrom:
+              secretKeyRef:
+                name: sshfs-secret
+                key: sshprivkey
+          - name: SSHPUBKEY
+            valueFrom:
+              secretKeyRef:
+                name: sshfs-secret
+                key: sshpubkey
+          - name: SERVER
+            valueFrom:
+              configMapKeyRef:
+                name: sshfs-configmap
+                key: server
+          - name: MOUNTPOINT
+            valueFrom:
+              configMapKeyRef:
+                name: sshfs-configmap
+                key: mountpoint
+          - name: STARTCLUSTER
+            value: "true"
+#        - name: SKIPMOUNT
+#          value: "true"
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: tf-notebook
+spec:
+  type: NodePort
+  selector:
+    app: tf-notebook
+  ports:
+  - protocol: TCP
+    nodePort: 30050
+    port: 8888
+    targetPort: 8888
