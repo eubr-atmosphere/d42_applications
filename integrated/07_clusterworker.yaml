@@ -1,9 +1,29 @@
-apiVersion: extensions/v1beta1
-kind: Deployment
+
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: wncluster
+spec:
+  selector:
+    app: clusterworker
+  ports:
+  - protocol: TCP
+    port: 9376
+    name: nginx
+    targetPort: 80
+---
+apiVersion: apps/v1
+kind: StatefulSet
 metadata:
   name: clusterworker
-spec: 
+spec:
+  serviceName: "wncluster"
+  # Adjust the number of replicas
   replicas: 4
+  selector:
+    matchLabels:
+      app: clusterworker
   template:
     metadata:
       labels: 
@@ -17,11 +37,7 @@ spec:
              cpu: "1"
            requests:
              cpu: "0.5"
-         #image: eubraatmosphere/eubraatmosphere_autobuild:ub16_sshfspy3-client
-         #command: [ 'bash' ]  <- This will overwrite the ENTRYPOINT of the container
-         #args: [ 'for file in /mnt/share/vol001/data/*.MP4 ;  do frameext.py -i $file -o $file ; done' ]
          args: [ 'ipengine --file=/mnt/.ipython/profile_default/security/ipcontroller-engine.json' ]
-#         args: [ 'sleep 3600' ]
          securityContext:
            privileged: true
          env:
