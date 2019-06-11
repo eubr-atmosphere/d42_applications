@@ -1,0 +1,11 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: iperf3-server
+spec:
+  containers:
+    - name: iperf3-server
+      image: networkstatic/iperf3
+      args: ["-s"]
+      ports:
+      - containerPort: 5201

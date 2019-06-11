@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nvidia-docker
+spec:
+  containers:
+  - name: nvidia-docker 
+    image: nvidia/cuda:9.0-base
+    resources:
+      limits:
+        nvidia.com/gpu: 1 #Number of GPUs
+    command: [ "/bin/sh" ]
+    args: ["-c", "nvidia-smi; while true; do echo hello; sleep 60;done"]
+

@@ -1,0 +1,484 @@
+#### Creation of a Persistent Volume
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: european-volume
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 128M
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/volume/vol001"
+---
+#### Creation of a Persistent Volume
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: brazilian-volume
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 128M
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/volume/vol002"
+---
+#### Creation of a Persistent Volume Claim
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: european-pv-claim
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 96M 
+---
+#### Creation of a Persistent Volume Claim
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: brazilian-pv-claim
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 96M
+---
+#### Register Protected data
+kind: Secret
+apiVersion: v1
+metadata:
+  name: eusshfs-secret
+data:
+  sshprivkey: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLVxuTUlJRW93SUJBQUtDQVFFQXd4T0U0L1I1VDdMeldKcms3OVZLb2NPTDFNem5QOXdpSHphcW9zT1k1Y3Q0Z0dycVxuL2NNT0xwWGRyTWpPRGh1Yy9ORU9DbHQycHJFeFgvc0dQamFRUWgzRTVNWWk5NURtanE2a24vM1Z2dmZUUFlCbVxuM3N2NmJZZEJnNHNFdDQ2R3BKNDFISDFIZ2ovckZPUmtUWlZuNkt5VjFnSUhadUNZUmUxeWhUcEVubVdDYU5VQlxuUW5lbGNEWTVncnh5QTRKQW1ERVU2TVJNZ2k1R284M1RjamNvWG45S1Z5WUtZNGdYaC9sWEFHVGRVaGloVHY2U1xuL2hIS0phYVlEOEl3bFR0Y0V1MHlreCt3NERsaDV0WCtXd2Fvb3BmSzZ3UlMxSHV1dE9ETEowcVdNU2lYakRZNFxuaFUrdEFRaVVNZFNQVkVqNyt6WXA2Wkp4UVVYS1dzNTQrbTcxUlFJREFRQUJBb0lCQUV1UnlDMDJpN2dnTHJ6b1xuWkQrMGRORHRtOEc0RHUxaUxhWEIyNkJwL1ZVbjJXcUdBTHFGVVgwaWVWbHlBTURlV1pabXRmVzFNT1dxUnVKVFxuc0R0eGo3ak5KM1VvZkd0REtzMmpRZ3Jvbm1ENFNGRE82UXJ1SWZsRUtGRDVEYjY5NjlMaHB0bCtmckVxYWJzU1xuTHZrUEk4Mnk3ZWlWcUtCbDZSZE53TXR6b3hsb3RFK0sxQmN3aGJkNmRkWWJTdmQ0N2JQRGhod2pDUldXaGlWNVxuY1BCSUlBRjNodVN5L0VJK0VlQ1RKdk9Ldkwyd3ZPbHFvVlpIdE8vbXRIdkdQSmI4RjAyc0piVVlNM0U2ZkgzNlxuNk40VGZKYm0xc01QOE5xb0VFdFMxeGNrOVhiMitSSHFZVkNQb2dQamczNlRnSVpXVVpLZ3BsTU5XZVY5SEQ1blxuZll3Tm5BRUNnWUVBNHJCcWt0UWdxS0RLaHhEdEh5Q3NsUVdXdFpPdVo1R0hLenNiR3czc3RzVUNJcTJEQUVFUFxuS2EramQ3bU80aWpST0g1R2FHa0NsWkhWa3ovSitxMWtGM09QeGxLL2o1SkNGeS9Dd2MwUjBKOUl1eVNPbTlTbVxuVHI5akdkd2lib3J5YldKZVNCY2Qwd0E3aGc0YkVFNEFINWk2cXQ3b0ZmajBMVUxDMmgxRUN3VUNnWUVBM0V5eFxuT0tVNmJBTFlRMUdTVS9KOFBPT2ZKenN0OWgyMXRlMjVUNHZaQllkWDRmYVRRbU5pL0hXckJhWEQza2NjZDhIclxuNHhub3ZCQTF6ME9ldnYwWERhdDRma1NzQ0lacUJsZ2lpT1daUWpxSUtHWndCMUdLZkRMdHJQK0hzelNxdXNyU1xuZGlYOHZ2dnlERGtIOUhWcW54RkVndXF2RU9zVG1sRFduMFdaMVVFQ2dZRUFyYzRsYUQ1TWEvNGNTa0tvQzkyNVxuZE9pOERLd1daRUlvS1BWQWF4WGFFS2dzWXZvMkh0UERGR3NlSW9XYkQ3dkw3a3lqSHhxa2FKbFA3MzVSRm1vcVxuKy9BV3BEQjl2MDZjYmJxbzBINnkwZ25PY2U0dGlUMFo1ZmJIdk9RVFlqNFdjZGVpQWhQM1FmaERxeHpWazBLNlxueFg4TVlFWllHOEN0TnFhaFR5cHhLU0VDZ1lBckJEcXl3ZWkzZ0pLMENuQ1ZQY3N1cEkvR1BGTU1OTjd2aUZ6Z1xuQUlHL0I1K01ldlprUnozajZDSWQ5ekZZN08vTkhxdXQ2N2c3U0xzSkhyNFhzeG5XVEg0NXdiVUo4UjB3NGZMVVxuWW1qYnVzd3RmMXN1d3FoVStpalkyQWlxWUlWWjloTEVpVVJpRXBZLzlyN3I2Q1dLcS9lQnpNdWtkUktkMWwwaVxuT3BnQVFRS0JnQjNWbDdaWFFwbENLdXRwRGVHOE1CTit5S1NUTnI1NmFlRnNQb25EWnM5bWo0RUN0aHBQMFcvK1xubS9iYUdLWmpTMVlvb0RrNXJmUU5XZVJqRE1mNlNra1dEUVI0ZDZIenlJTytOVXJEMlhBeDlQbUNpV1NDQlA1d1xuVEdiTm9SbDlDaU0wT2x4YW56d0NBdFZrN2NwSTNBMVhGdFlqU1U0bDdWZnRKMHY2V1l4K1xuLS0tLS1FTkQgUlNBIFBSSVZBVEUgS0VZLS0tLS0=
+  sshpubkey: c3NoLXJzYSBBQUFBQjNOemFDMXljMkVBQUFBREFRQUJBQUFCQVFEREU0VGo5SGxQc3ZOWW11VHYxVXFodzR2VXpPYy8zQ0lmTnFxaXc1amx5M2lBYXVyOXd3NHVsZDJzeU00T0c1ejgwUTRLVzNhbXNURmYrd1krTnBCQ0hjVGt4aUwza09hT3JxU2YvZFcrOTlNOWdHYmV5L3B0aDBHRGl3UzNqb2FrbmpVY2ZVZUNQK3NVNUdSTmxXZm9ySlhXQWdkbTRKaEY3WEtGT2tTZVpZSm8xUUZDZDZWd05qbUN2SElEZ2tDWU1SVG94RXlDTGthanpkTnlOeWhlZjBwWEpncGppQmVIK1ZjQVpOMVNHS0ZPL3BMK0Vjb2xwcGdQd2pDVk8xd1M3VEtUSDdEZ09XSG0xZjViQnFpaWw4cnJCRkxVZTY2MDRNc25TcFl4S0plTU5qaUZUNjBCQ0pReDFJOVVTUHY3TmlucGtuRkJSY3Bhem5qNmJ2VkYgdWJ1bnR1QGt1YmVzZXJ2ZXIubG9jYWxkb21haW4=
+---
+#### Register Protected data
+kind: Secret
+apiVersion: v1
+metadata:
+  name: brsshfs-secret
+data:
+  sshprivkey: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLVxuTUlJRXBBSUJBQUtDQVFFQXFoZk00eWdGa3ZWZkVLaEE4bFV4S2owMUVVZHUwYkMyVVplRmd3eHowRWZBWVM1OVxuc04vM1MveFhITnBxWlFmRXJaWDR4dmllTElDZmRUSnN1MTFBZFg2VzBuMmswZzM2OVEvZGdTeEFMNUV3R0V5V1xuNUNRU0xUQVJzQS9ycklHdjlMUjcvK0tDTjR2VjhneXpXVmpCVFhRdXNxdWJyQ0xRVjlKbHdYOXpybWQ3dmRISFxuMVExdVZScVZOTFNRZEZzVjdLTWhNeE9OdHc2ZEtEVWljZnBxMGNUS00yV2ZUQXkwQzVDSm5hcHRXVW5yaUppNVxuZVMwdWdlNEdXaENOOExPMUcxRjZuRFVSdEZqZDFQc01LdVJza0FidFd2cHJaMWVGQU5iQkk5Ri96S3l6TUJhY1xua2NtT2ZOVWZqckM4aTJ3UFBLeVdVMHRheTRyUHpYMEw1ZTQ4c1FJREFRQUJBb0lCQUZpUEw4UU5zR2xGakF1V1xuTHNwOWhLMmpWSi84ZXp4K0wwN24vMEd1R0JhWFpSaTBKZ2tUY3lTQzY3QkFJQ2tlRkU3MHlLU0FDWXJPSlRmVlxuMnpycVlJZE1NNmJBZURKTnlSNFM5cGNzdlBhSE4yMVBZempCZHgxRDY5R3BXR0ZtM0lBaUFIWElMMWhRWEVJOFxuVHB6MFV5REtudzJ6djhldUVKL0pFZVhmUUJITFFXOVZIR1g4cy94K3NaOVVuMnZ2aVVXUkpGUjBVcXByUFFZdFxuQXArSFdrNVl5TldrMzhPRkVtQ1ZySnNMYitlTzBxK1QvS1Z0dndDNmx0VlBWbXdUUlFMTjJ0ZGpHaXltQVE2dlxuK1U5NVdONnVDRUYrbXNsdGMwSHJUN01OMEtrMWdzU2lsYzRxU2FVY285UHhTcVNCMjJWSHFzM0xYQkJEWFAvL1xuUmNFSXRZa0NnWUVBNGRGeHFoTFRmWXRpMGtWWTNYeVc2NHcvb0h1ZVhyaGlMTitFbWtsOTl4YmM1b0swU0FqUFxubldleWtsTVR1aHdqeEJZN0MrT0svb0pneUU5WUh6MmZZWFdreVAxaGIrTnBBUjhrd0lSVnRkZVZsUm9mcVZkZ1xuVlVlUW1EejhBODg4TmVEcTdTZ29FQVU2NWdnVndwYjlGVFVLbUdmK0x2bEpNYlNTb1ZGQm5BTUNnWUVBd05Pc1xuVkIwTzZBK2l6SEt1RWlBUC9kME1Ca2RzOTZwM1lwcVNUa3QrTWFLcUlwS25xc2NGWjkxWnl3MGd3UDJ3QU1hZ1xuL1IyRUJqU3YrMjkrSEMweE45dDlyNVhlZjczaEdYWFZSbkt5QUwxbkV3WWVXbmU4L2ZFaUlydGVQZXYxRXR6aFxuN3JLd2ZFUVdsRFludjYxT1h4LzJmOUpCeExtVDBnVDAveWhsR0RzQ2dZRUFvUW90WmgxUTU3cE1laW5zU3QrN1xuL1RVaWR2OVJuTGtmZ21MUWZQc21NdDBDSWYxYU5mamFucVZDQ3VubUtwWkF4MmtYS001WDVGTDBWRVdKVVpZdlxub0dBMmFRT1J4aXBHU3Y5N3hUTmFzSGlTK3ljTEowZmhzazk4QmFXUUQrTnRTL3NmYm90eHJxTWNNc25YUXROTVxubnlBWmMwRE9XNDk1ckZIYk0rSHZ5U01DZ1lCaFlnV2tMVkM3N2ptZjIwTUNNR01qS0tITUFnS01TZkVsUVQ4bVxuZjRYcDkyYkpNeHV1YWZqVzdibE5qUUcvdGQ5UFpRRWxFK1Q3WlZ5RE5WbVJUVm1RQmkvQm40VFJLc29tRzVac1xuajd4S0YxMlpBL3dNWUhCNEozRy83TFM1dlJMMlJjdHN5NTNLQkhFS3hSYnAvTktaeEFDdnFUWkI3aDh6Y0FGelxuWTZrNnhRS0JnUURLT1R2aGFTZEEzSE5LTkZpa0hDeTQxWkZBN3NmVnJreGQzcHUrNDlQcUpZcVhybG9BVG13RlxuZUExS1g2RUVaeHJmbUpyRkNlWUF6aC9qRjVqclJaS0hyOGh6ZVBmUXpVZStxd21QNFlyb2hyY2Z4TFdIMU9lVlxucmFRenJ0RHdaeCtpc2R5QW8vOVFBdXgxODlNUTRURFJtSklrYUhwU0JhQmF2eUFKT0g4Y3hnPT1cbi0tLS0tRU5EIFJTQSBQUklWQVRFIEtFWS0tLS0t
+  sshpubkey: c3NoLXJzYSBBQUFBQjNOemFDMXljMkVBQUFBREFRQUJBQUFCQVFDcUY4empLQVdTOVY4UXFFRHlWVEVxUFRVUlIyN1JzTFpSbDRXRERIUFFSOEJoTG4ydzMvZEwvRmNjMm1wbEI4U3RsZmpHK0o0c2dKOTFNbXk3WFVCMWZwYlNmYVRTRGZyMUQ5MkJMRUF2a1RBWVRKYmtKQkl0TUJHd0QrdXNnYS8wdEh2LzRvSTNpOVh5RExOWldNRk5kQzZ5cTV1c0l0QlgwbVhCZjNPdVozdTkwY2ZWRFc1VkdwVTB0SkIwV3hYc295RXpFNDIzRHAwb05TSngrbXJSeE1velpaOU1ETFFMa0ltZHFtMVpTZXVJbUxsNUxTNkI3Z1phRUkzd3M3VWJVWHFjTlJHMFdOM1Urd3dxNUd5UUJ1MWErbXRuVjRVQTFzRWowWC9NckxNd0ZweVJ5WTU4MVIrT3NMeUxiQTg4ckpaVFMxckxpcy9OZlF2bDdqeXggY2xvdWRhZG1Aa3ViZXNlcnZlci5sb2NhbGRvbWFpbg==
+---
+#### Create Server Deployment
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: eusshserver
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: eusshserver
+    spec:
+      volumes:
+        - name: eusshserver
+          persistentVolumeClaim:
+           claimName: european-pv-claim
+      containers:
+        - name: sshd
+          image: eubraatmosphere/eubraatmosphere_autobuild:ub16_sshd
+          env:
+            - name: SSHKEY
+              valueFrom:
+                secretKeyRef:
+                  name: sshfs-secret
+                  key: sshpubkey
+          ports:
+            - containerPort: 22
+          volumeMounts:
+            - mountPath: "/share/vol001"
+              name: eusshserver
+
+---
+#### Create Server Deployment
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: brsshserver
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: brsshserver
+    spec:
+      volumes:
+        - name: brsshserver
+          persistentVolumeClaim:
+           claimName: brazilian-pv-claim
+      containers:
+        - name: sshd
+          image: eubraatmosphere/eubraatmosphere_autobuild:ub16_sshd
+          env:
+            - name: SSHKEY
+              valueFrom:
+                secretKeyRef:
+                  name: sshfs-secret
+                  key: sshpubkey
+          ports:
+            - containerPort: 22
+          volumeMounts:
+            - mountPath: "/share/vol002"
+              name: brsshserver
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: eusshserver
+spec:
+  selector:
+    app: eusshserver
+  ports:
+  - protocol: TCP
+    port: 22
+    targetPort: 22
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: brsshserver
+spec:
+  selector:
+    app: brsshserver
+  ports:
+  - protocol: TCP
+    port: 22
+    targetPort: 22
+---
+
+#### Register Environment Variables
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: sshfs-configmap
+data:
+  euserver: eusshserver.default.svc.cluster.local
+  brserver: brsshserver.default.svc.cluster.local
+  mountpoint: /mnt
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: hostfilecfgm
+data:
+  hostfile: "root@clusterworker-0.mpicluster.default.svc.cluster.local\nroot@clusterworker-1.mpicluster.default.svc.cluster.local"
+---
+#### Deploy Notebook
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: eutf-notebook
+  labels:
+    app: eutf-notebook
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: eutf-notebook
+  template:
+    metadata:
+      labels:
+        app: eutf-notebook
+    spec: 
+      containers:
+      - name: minimal-notebook
+        image: eubraatmosphere/eubraatmosphere_autobuild:ub16_tensorflow13mpi41-notebook
+        ports:
+        - containerPort: 8888
+          #args: ["start-notebook.sh --NotebookApp.token='c8de56fa4deed24999803e93c227592aef6538f93025fe01'"]
+        args: ["start-notebook.sh --NotebookApp.token=''"]
+        volumeMounts:
+        - mountPath: /etc/hostfiledir
+          name: hostfiledir
+        securityContext:
+          privileged: true
+        env:
+          - name: SSHPRIVKEY
+            valueFrom:
+              secretKeyRef:
+                name: eusshfs-secret
+                key: sshprivkey
+          - name: SSHKEY
+            valueFrom:
+              secretKeyRef:
+                name: eusshfs-secret
+                key: sshpubkey
+          - name: SSHPUBKEY
+            valueFrom:
+              secretKeyRef:
+                name: eusshfs-secret
+                key: sshpubkey
+          - name: SERVER
+            valueFrom:
+              configMapKeyRef:
+                name: sshfs-configmap
+                key: euserver
+          - name: MOUNTPOINT
+            valueFrom:
+              configMapKeyRef:
+                name: sshfs-configmap
+                key: mountpoint
+          - name: STARTCLUSTER
+            value: "true"
+#        - name: SKIPMOUNT
+#          value: "true"
+      volumes:
+        - name: hostfiledir
+          configMap:
+            name: hostfilecfgm
+            items:
+            - key: hostfile
+              path: hostfile
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: eutf-notebook
+spec:
+  type: NodePort
+  selector:
+    app: eutf-notebook
+  ports:
+  - protocol: TCP
+    nodePort: 30050
+    port: 8888
+    targetPort: 8888
+---
+
+#### Deploy Notebook
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: brtf-notebook
+  labels:
+    app: brtf-notebook
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: brtf-notebook
+  template:
+    metadata:
+      labels:
+        app: brtf-notebook
+    spec: 
+      containers:
+      - name: scipy-notebook
+        image: eubraatmosphere/eubraatmosphere_autobuild:ub16_scipy-notebook
+        ports:
+        - containerPort: 8888
+        args: ["start-notebook.sh --NotebookApp.token=''"]
+        volumeMounts:
+        - mountPath: /etc/hostfiledir
+          name: hostfiledir
+        securityContext:
+          privileged: true
+        env:
+          - name: SSHPRIVKEY
+            valueFrom:
+              secretKeyRef:
+                name: brsshfs-secret
+                key: sshprivkey
+          - name: SSHKEY
+            valueFrom:
+              secretKeyRef:
+                name: brsshfs-secret
+                key: sshpubkey
+          - name: SSHPUBKEY
+            valueFrom:
+              secretKeyRef:
+                name: brsshfs-secret
+                key: sshpubkey
+          - name: SERVER
+            valueFrom:
+              configMapKeyRef:
+                name: sshfs-configmap
+                key: brserver
+          - name: MOUNTPOINT
+            valueFrom:
+              configMapKeyRef:
+                name: sshfs-configmap
+                key: mountpoint
+          - name: STARTCLUSTER
+            value: "true"
+#        - name: SKIPMOUNT
+#          value: "true"
+      volumes:
+        - name: hostfiledir
+          configMap:
+            name: hostfilecfgm
+            items:
+            - key: hostfile
+              path: hostfile
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: brtf-notebook
+spec:
+  type: NodePort
+  selector:
+    app: brtf-notebook
+  ports:
+  - protocol: TCP
+    nodePort: 30051
+    port: 8888
+    targetPort: 8888
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: mpicluster
+spec:
+  selector:
+    app: euclusterworker
+  ports:
+  - protocol: TCP
+    port: 9376
+    name: nginx
+    targetPort: 80
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: euclusterworker
+spec:
+  serviceName: "mpicluster"
+  replicas: 2
+  selector:
+    matchLabels:
+      app: euclusterworker
+  template:
+    metadata:
+      labels: 
+        app: euclusterworker
+    spec:
+      containers:
+       - name: mpiworker
+         image: eubraatmosphere/eubraatmosphere_autobuild:ub16gputf13-mpi41
+         resources:
+           limits:
+             nvidia.com/gpu: 1 #Number of GPUs
+             cpu: "1"
+           requests:
+             cpu: "0.5"
+         args: [ 'ipengine --file=/mnt/.ipython/profile_default/security/ipcontroller-engine.json' ]
+         securityContext:
+           privileged: true
+         env:
+           - name: SSHPRIVKEY
+             valueFrom:
+               secretKeyRef:
+                 name: eusshfs-secret
+                 key: sshprivkey
+           - name: SSHKEY
+             valueFrom:
+               secretKeyRef:
+                name: eusshfs-secret
+                key: sshpubkey
+           - name: SSHPUBKEY
+             valueFrom:
+               secretKeyRef:
+                name: eusshfs-secret
+                key: sshpubkey
+           - name: SERVER
+             valueFrom:
+               configMapKeyRef:
+                 name: sshfs-configmap
+                 key: euserver
+           - name: MOUNTPOINT
+             valueFrom:
+               configMapKeyRef:
+                 name: sshfs-configmap
+                 key: mountpoint
+#           - name: SKIPMOUNT
+#             value: "true"
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: brcluster
+spec:
+  selector:
+    app: brclusterworker
+  ports:
+  - protocol: TCP
+    port: 9376
+    name: nginx
+    targetPort: 80
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: brclusterworker
+spec:
+  serviceName: "brcluster"
+  replicas: 2
+  selector:
+    matchLabels:
+      app: brclusterworker
+  template:
+    metadata:
+      labels: 
+        app: brclusterworker
+    spec:
+      containers:
+       - name: brworker
+         image: eubraatmosphere/eubraatmosphere_autobuild:ub16_sshfspy3-client
+         resources:
+           limits:
+             nvidia.com/gpu: 1 #Number of GPUs
+             cpu: "1"
+           requests:
+             cpu: "0.5"
+         args: [ 'ipengine --file=/mnt/.ipython/profile_default/security/ipcontroller-engine.json' ]
+         securityContext:
+           privileged: true
+         env:
+           - name: SSHPRIVKEY
+             valueFrom:
+               secretKeyRef:
+                 name: brsshfs-secret
+                 key: sshprivkey
+           - name: SSHKEY
+             valueFrom:
+               secretKeyRef:
+                name: brsshfs-secret
+                key: sshpubkey
+           - name: SSHPUBKEY
+             valueFrom:
+               secretKeyRef:
+                name: brsshfs-secret
+                key: sshpubkey
+           - name: SERVER
+             valueFrom:
+               configMapKeyRef:
+                 name: sshfs-configmap
+                 key: brserver
+           - name: MOUNTPOINT
+             valueFrom:
+               configMapKeyRef:
+                 name: sshfs-configmap
+                 key: mountpoint
+#           - name: SKIPMOUNT
+#             value: "true"
+

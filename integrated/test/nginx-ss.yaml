@@ -1,0 +1,77 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: www-0
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 40M
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/tmp"
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: www-1
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 40M
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/tmp"
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: nginx
+spec:
+  selector:
+    app: nginx
+  ports:
+  - protocol: TCP
+    port: 9376
+    name: nginx
+    targetPort: 80
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nginx
+spec:
+  serviceName: "nginx"
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+          name: nginx
+        volumeMounts:
+        - name: www
+          mountPath: /usr/share/nginx/html
+  volumeClaimTemplates:
+  - metadata:
+      name: www
+    spec:
+      accessModes: [ "ReadWriteMany" ]
+      storageClassName: manual
+      resources:
+        requests:
+          storage: 5Mi
+
