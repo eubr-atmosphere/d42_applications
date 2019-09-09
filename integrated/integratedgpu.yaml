@@ -115,7 +115,11 @@ spec:
         #command: ["bash"]
         #args: ["-c", "sleep 3600"]
         command: ["start-notebook.sh"]
+<<<<<<< HEAD
+        args: ["--NotebookApp.token='ATM0SPH3R3'"]
+=======
         args: ["--NotebookApp.token=''"]
+>>>>>>> 6b14781f20950d454c5796f22eacf29167e7065c
         securityContext:
           privileged: true
         env:

@@ -123,7 +123,11 @@ spec:
         #args: ["-c", "sleep 3600"]
         #command: ["start-notebook.sh"]
         #args: ["--NotebookApp.token=''"]
+<<<<<<< HEAD
+        args: ["start-notebook.sh --NotebookApp.token='ATM0SPH3R3'"]
+=======
         args: ["start-notebook.sh --NotebookApp.token=''"]
+>>>>>>> 6b14781f20950d454c5796f22eacf29167e7065c
         volumeMounts:
         - mountPath: /etc/hostfiledir
           name: hostfiledir
